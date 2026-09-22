@@ -13,3 +13,10 @@ $router->get('/api/test', function () {
 $router->post('/api/purchases', function () use ($purchaseController) {
     return $purchaseController->store();
 });
+
+
+
+
+$router->post('/api/sales', function () use ($saleController) {
+    return $saleController->store();
+});

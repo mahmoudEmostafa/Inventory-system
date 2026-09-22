@@ -12,7 +12,9 @@ use App\Infrastructure\Repositories\StockMovementRepository;
 use App\Application\Services\InventoryService;
 use App\Application\Services\PurchaseService;
 use App\Http\Controllers\PurchaseController;
-
+use App\Application\Services\SaleService;
+use App\Infrastructure\Repositories\SaleRepository;
+use App\Http\Controllers\SaleController;
 $database = new Database();
 
 $inventoryRepository = new InventoryRepository(
@@ -45,7 +47,18 @@ $purchaseService = new PurchaseService(
 $purchaseController = new PurchaseController(
     $purchaseService
 );
+$saleRepository = new SaleRepository($database);
 
+$saleService = new SaleService(
+    $saleRepository,
+    $inventoryService,
+    $stockMovementRepository,
+    $transactionManager
+);
+
+$saleController = new SaleController(
+    $saleService
+);
 $router = new Router();
 
 require_once __DIR__ . '/../routes/api.php';
