@@ -20,3 +20,8 @@ $router->post('/api/purchases', function () use ($purchaseController) {
 $router->post('/api/sales', function () use ($saleController) {
     return $saleController->store();
 });
+
+
+$router->post('/api/transfers', function () use ($transferController) {
+    return $transferController->store();
+});

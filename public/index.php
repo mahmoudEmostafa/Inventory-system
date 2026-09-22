@@ -15,6 +15,9 @@ use App\Http\Controllers\PurchaseController;
 use App\Application\Services\SaleService;
 use App\Infrastructure\Repositories\SaleRepository;
 use App\Http\Controllers\SaleController;
+use App\Application\Services\TransferService;
+use App\Infrastructure\Repositories\TransferRepository;
+use App\Http\Controllers\TransferController;
 $database = new Database();
 
 $inventoryRepository = new InventoryRepository(
@@ -58,6 +61,19 @@ $saleService = new SaleService(
 
 $saleController = new SaleController(
     $saleService
+);
+
+$transferRepository = new TransferRepository($database);
+
+$transferService = new TransferService(
+    $transferRepository,
+    $inventoryService,
+    $stockMovementRepository,
+    $transactionManager
+);
+
+$transferController = new TransferController(
+    $transferService
 );
 $router = new Router();
 
