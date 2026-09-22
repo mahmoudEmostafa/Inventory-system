@@ -4,6 +4,47 @@ require_once __DIR__ . '/../config/bootstrap.php';
 
 use App\Core\Router;
 use App\Http\Responses\JsonResponse;
+use App\Infrastructure\Database\Database;
+use App\Infrastructure\Database\TransactionManager;
+use App\Infrastructure\Repositories\InventoryRepository;
+use App\Infrastructure\Repositories\PurchaseRepository;
+use App\Infrastructure\Repositories\StockMovementRepository;
+use App\Application\Services\InventoryService;
+use App\Application\Services\PurchaseService;
+use App\Http\Controllers\PurchaseController;
+
+$database = new Database();
+
+$inventoryRepository = new InventoryRepository(
+    $database
+);
+
+$purchaseRepository = new PurchaseRepository(
+    $database
+);
+
+$stockMovementRepository = new StockMovementRepository(
+    $database
+);
+
+$inventoryService = new InventoryService(
+    $inventoryRepository
+);
+
+$transactionManager = new TransactionManager(
+    $database->getConnection()
+);
+
+$purchaseService = new PurchaseService(
+    $purchaseRepository,
+    $inventoryService,
+    $stockMovementRepository,
+    $transactionManager
+);
+
+$purchaseController = new PurchaseController(
+    $purchaseService
+);
 
 $router = new Router();
 
@@ -16,7 +57,10 @@ $path = parse_url(
 
 $basePath = dirname($_SERVER['SCRIPT_NAME']);
 
-if ($basePath !== '/' && str_starts_with($path, $basePath)) {
+if (
+    $basePath !== '/' &&
+    str_starts_with($path, $basePath)
+) {
     $path = substr($path, strlen($basePath));
 }
 
